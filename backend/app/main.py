@@ -27,12 +27,26 @@ cors_origins = list(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$|^https://[\w\-]+\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+@app.get("/")
+def root():
+    return {
+        "app": "DepthWizard API",
+        "status": "online",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "api_v1": "/api/v1"
+    }
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "app": "DepthWizard"}
 
 app.include_router(api_router, prefix="/api/v1")
 
