@@ -1,0 +1,31 @@
+# --- Python / backend ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+backend/storage/
+storage/
+backend/.env
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Node / frontend ---
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+frontend/.env.local
+frontend/.env
+
+# --- General / OS ---
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+

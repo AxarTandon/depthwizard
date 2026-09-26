@@ -1,0 +1,44 @@
+# Runs the full stack locally: Postgres + FastAPI backend + Next.js frontend.
+# For local development only — see README.md for cloud deployment
+# (Vercel + Render), which is what you'll actually use to go live.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: depthwizard
+      POSTGRES_PASSWORD: depthwizard
+      POSTGRES_DB: depthwizard
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/storage:/app/storage
+
+  frontend:
+    build:
+      context: ./frontend
+      # These become build ARGs so Next.js inlines them into the client
+      # bundle at build time (see frontend/Dockerfile for why this matters —
+      # setting them only under `environment:` below is NOT enough).
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+        NEXT_PUBLIC_USE_BACKEND: "true"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+      NEXT_PUBLIC_USE_BACKEND: "true"
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
